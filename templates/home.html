@@ -1,21 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+ {% extends "layoutm.html" %} {% block content %} {% for post in data['posts'] %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width>, initial-scale=1.0">
-    <title>Flask Blog {{ ' - ' + data['title'] if (data['title']) else '' }}</title>
-</head>
+<main role="main" class="container">
+    <div class="row">
 
-<body>
-    <h1>Hello from {{ data['user'] }}</h1>
+        <div class="col-md-8">
 
-    {% for post in data['posts'] %}
-    <h1>{{ post.title }}</h1>
-    <p>By {{ post.author }} on {{ post.date_posted }}</p>
-    <p>{{ post.content }}</p>
-    {% endfor%}
+            <h1>{{ post.title }}</h1>
+            <p>By {{ post.author }} on {{ post.date_posted }}</p>
+            <p>{{ post.content }}</p>
 
-</body>
+        </div>
 
-</html>
+        <div class="col-md-4">
+            <div class="content-section">
+                <h3>Our Sidebar</h3>
+                <p class='text-muted'>You can put any information here you'd like.
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light">Latest Posts</li>
+                        <li class="list-group-item list-group-item-light">Announcements</li>
+                        <li class="list-group-item list-group-item-light">Calendars</li>
+                        <li class="list-group-item list-group-item-light">etc</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+{% endfor%} {% endblock %}

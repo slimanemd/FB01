@@ -1,3 +1,6 @@
+    <h1>{{ data['title'] + ' Page' if (data['title']) else '' }}</h1>
+
+
 Looking for git in: git
 Using git 2.17.1 from git
 
