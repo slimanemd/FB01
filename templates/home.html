@@ -1,31 +1,39 @@
- {% extends "layoutm.html" %} {% block content %} {% for post in data['posts'] %}
+<!-- extends -->
+{% extends "layout.html" %}
 
-<main role="main" class="container">
-    <div class="row">
+<!-- MAC articlePost -->
+{% macro articlePost(post) -%}
 
-        <div class="col-md-8">
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + 
+(post.author_image_file if post.author_image_file else 'default.jpg')) }}">
 
-            <h1>{{ post.title }}</h1>
-            <p>By {{ post.author }} on {{ post.date_posted }}</p>
-            <p>{{ post.content }}</p>
-
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="#">{{ post.author }}</a>
+            <small class="text-muted">{{ post.date_posted }}</small>
         </div>
-
-        <div class="col-md-4">
-            <div class="content-section">
-                <h3>Our Sidebar</h3>
-                <p class='text-muted'>You can put any information here you'd like.
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-light">Latest Posts</li>
-                        <li class="list-group-item list-group-item-light">Announcements</li>
-                        <li class="list-group-item list-group-item-light">Calendars</li>
-                        <li class="list-group-item list-group-item-light">etc</li>
-                    </ul>
-                </p>
-            </div>
-        </div>
-
+        <h2>
+            <a class="article-title" href="#">
+                {{ post.title |striptags|title }} 
+            </a>
+        </h2>
+        <p class="article-content">{{ post.content }}</p>
     </div>
-</main>
 
-{% endfor%} {% endblock %}
+</article>
+
+{%- endmacro %}
+<!-- !MAC articlePost -->
+
+<!-- block content -->
+{% block content %}
+<!-- for  -->
+{% for post in data['posts'] %}
+<!-- articlePost -->
+{{ articlePost(post) }}
+<!-- !articlePost -->
+{% endfor%}
+<!-- !for -->
+{% endblock %}
+<!-- !block content -->
