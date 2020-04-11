@@ -28,8 +28,10 @@ title =  "My Blog"
 
 i18s  = {
   'en':{
-    'register':'Sign up',
-    'login':'Sign in',
-    'username':'User Name'
+    'register_submit':'Sign up',
+    'login_submit':'Sign in',
+    'username':'User Name',
+    'account_submit':'Update',
+    'about_title':'About Hi'
   }
 }

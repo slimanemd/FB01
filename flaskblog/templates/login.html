@@ -18,6 +18,23 @@
 </div>
 {%- endmacro %}
 
+<!-- MAC picture -->
+{% macro frm_grp_picture(form_picture) -%}
+<div class="form-group">
+    {{ form_picture.label() }}
+    <!-- dd -->
+    {{ form_picture(class="form-control-file") }}
+    <!-- dd -->
+    {% if form_picture.errors %}
+    <!-- dd -->
+    {% for error in form_picture.errors %}
+    <span class="text-danger">{{ error }}</span></br>
+    {% endfor %}
+    <!--dd -->
+    {% endif %}
+</div>
+{%- endmacro %}
+
 <!-- MAC submit -->
 {% macro frm_remember() -%}
 <div class="form-check">
@@ -28,18 +45,24 @@
 {%- endmacro %}
 
 
-<!-- MAC submit -->
+<!-- MAC submit #form.infos['submit'] -->
 {% macro frm_grp_submit() -%}
 <div class="form-group">
-    {{ form.submit(class='btn btn-outline-info', value=form.infos['submit'] ) }}
+    {{ form.submit(class='btn btn-outline-info', value=data.submit) }}
 </div>
 {%- endmacro %}
 
 <!-- MAC submit -->
-{% macro frm_link_sign_inup(regorlog) -%}
+{% macro frm_grp_forgot() -%}
+<small class="text-muted ml-2"> <a href="#">Forgot Password?</a> </small>
+<!-- dd -->
+{%- endmacro %}
+
+<!-- MAC submit  .is-SignUp -->
+{% macro frm_link_sign_inup() -%}
 <div class="border-top pt-3">
     <small class="text-muted">
-        {% if data.isSignUp %}
+        {% if data.entity == 'R' %}
             Already have an account? <a class="ml-2" href= "{{ url_for('register') }}">Sign in</a>
         {% else %}
             Need An Account? <a class="ml-2" href= "{{ url_for('register') }}">Sign up</a>
@@ -48,42 +71,69 @@
 </div>
 {%- endmacro %}
 
+
+<!-- MAC submit -->
+{% macro frm_user_infos() -%}
+<div class="media">
+    <img class="rounded-circle account-img" src="{{ image_file }}">
+    <div class="media-body">
+        <h2 class="account-heading">{{ current_user.username }}</h2>
+        <p class="text-secondary">{{ current_user.email }}</p>
+    </div>
+</div>
+{%- endmacro %}
+
 <!-- block content main -->
 {% block content %}
 
 <div class="content-section">
-    <form method="POST" action="">
+    <!-- inf-os 001 A -->
+    {% if data.entity == 'A' %} {{ frm_user_infos() }} {% endif %}
+    <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Join today {{ form.infos['title'] }}</legend>
-            <!-- username -->
-            {% if data.isSignUp %} {{ frm_grp_field(form.username) }} {% endif %}
+            <legend class="border-bottom mb-4">Join today {{ form.data.title }}</legend>
 
-            <!-- email -->
+            <!-- username 101 !L register + account - login is-SignUp -->
+            {% if data.entity != 'L' %} {{ frm_grp_field(form.username) }} {% endif %}
+
+            <!-- email 111 * -->
             {{ frm_grp_field(form.email) }}
 
-            <!-- password -->
-            {{ frm_grp_field(form.password) }}
+            <!-- password 110 !A-->
+            {% if data.entity != 'A' %} {{ frm_grp_field(form.password) }} {% endif %}
 
-            <!-- password -->
-            {% if data.isSignUp %} {{ frm_grp_field(form.confirm_password) }} {% endif %}
-            <!-- password -->
-            {% if not data.isSignUp %} {{ frm_remember() }} {% endif %}
+            <!-- confirm password 100 R is-SignUp-->
+            {% if data.entity == 'R' %} {{ frm_grp_field(form.confirm_password) }} {% endif %}
+
+            <!-- 010 remember L not is-SignUp-->
+            {% if data.entity == 'L' %} {{ frm_remember() }} {% endif %}
+
+            <!-- picture 001 A -->
+            {% if data.entity == 'A' %} {{ frm_grp_picture(form.picture) }} {% endif %}
 
         </fieldset>
+        <!-- submit 111 * -->
         {{ frm_grp_submit() }}
 
-        <!-- password -->
-        {% if not data.isSignUp %}
-        <!--  shdhkj --->
-        <small class="text-muted ml-2"> <a href="#">Forgot Password?</a> </small>
-        <!-- password -->
-        {% endif %}
+        <!-- forgot pw 010 L not is-SignUp-->
+        {% if data.entity == 'L' %}{{ frm_grp_forgot() }} {% endif %}
     </form>
 
-
 </div>
-{{ frm_link_sign_inup(true) }}
+{% if data.entity != 'A' %} {{ frm_link_sign_inup() }} {% endif %}
 
 <!-- !block content main -->
 {% endblock %}
+
+<!--                01111000    00110011    11100100
+    n field         Register    Login       Account
+    1 inf-os         0           0           1           A
+    2 name          1           0           1           !L
+    3 email         1           1           1           *
+    4 pass          1           1           0           !A
+    5 confirm       1           0           0           R
+    6 picture       0           0           1           A
+    7 remember      0           1           0           L
+    8 forget        0           1           0           L
+-->
