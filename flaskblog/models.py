@@ -1,14 +1,33 @@
 #======================================================================================
 #imports
 from datetime import datetime
-from flaskblog import db   #flaskblog pb cyclic
+from flaskblog import db, login_manager   #flaskblog pb cyclic
+from flask_login import UserMixin
 
+
+'''
+db.[create|drop]_all()
+from flaskblog import Entity
+entity1 = User(field='value',...)
+db.session.add(entity1)
+db.session.commit()
+
+entities = Entity.query.all/filter_by([field='value'])
+entity = entities.first/last/get(id)
+entity.field
+entity.subentity
+'''
+
+#
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 #======================================================================================
 #Models
 
 #User 1------>* Posts
-class User(db.Model):
+class User(db.Model, UserMixin):
     id          = db.Column(db.Integer, primary_key=True)
     username    = db.Column(db.String(20), unique=True, nullable=False)
     email       = db.Column(db.String(120), unique=True, nullable=False)
@@ -16,8 +35,15 @@ class User(db.Model):
     password    = db.Column(db.String(60), nullable=False)
     posts       = db.relationship('Post', backref='author', lazy=True)  # U 1--->* P
 
+    #rpr representation
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+    #is User exist search by name or email?
+    def isUserExist(fieldName, field_data):
+        if fieldName == 'email': return User.query.filter_by(email = field_data).first()  #email
+        if fieldName == 'username': return User.query.filter_by(username = field_data).first()  #
+        return False
 
 #Post 1------->1 User
 class Post(db.Model):
@@ -29,4 +55,3 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
-

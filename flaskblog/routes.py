@@ -1,10 +1,10 @@
+#======================================================================================
+#imports
 from flaskblog.utiles.utile import reglog
-from flaskblog.data.dt_posts import *
-
 from flaskblog import app
-from flask import render_template  #Flask, render_template  #, redirect, url_for, flash, request
-from flaskblog.models import User, Post
-
+from flask import render_template, redirect, url_for, request
+from flaskblog.data.dt_posts import user, posts, title
+from flask_login import current_user, logout_user, login_required
 #======================================================================================
 #Routes
 
@@ -22,9 +22,33 @@ def about():
 #Login route
 @app.route('/login' , methods= ['GET', 'POST'])
 def login():
-  return reglog(False)
+  if current_user.is_authenticated: return redirect(url_for('home'))
+
+  #
+  reglogFrm = reglog(False)
+  if reglogFrm == None:  
+    next_page =  request.args.get('next')
+    return  redirect(next_page) if next_page else redirect(url_for('home'))
+  return render_template('login.html', data={'isSignUp':False}, form=reglogFrm)  
 
 #register route
 @app.route('/register', methods=['GET','POST'])
 def register():
-  return reglog(True)
+  if current_user.is_authenticated: return redirect(url_for('home'))
+
+  #
+  reglogFrm = reglog(True)
+  if reglogFrm == None: return redirect(url_for('login'))
+  return render_template('login.html', data={'isSignUp':True}, form=reglogFrm)
+
+#Login route
+@app.route('/logout')  # , methods= ['GET', 'POST']
+def logout():
+  logout_user()
+  return redirect(url_for('home'))
+
+#Login route
+@app.route('/account')  # , methods= ['GET', 'POST']
+@login_required
+def account():
+  return render_template('account.html', data = {'user':'user', 'message': 'Hello to Account'})

@@ -24,3 +24,12 @@ posts = [
 
 user =  "SLIMANE"
 title =  "My Blog"
+
+
+i18s  = {
+  'en':{
+    'register':'Sign up',
+    'login':'Sign in',
+    'username':'User Name'
+  }
+}
