@@ -4,7 +4,6 @@ from datetime import datetime
 from flaskblog import db, login_manager   #flaskblog pb cyclic
 from flask_login import UserMixin
 
-
 '''
 db.[create|drop]_all()
 from flaskblog import Entity

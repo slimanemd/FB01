@@ -1,0 +1,34 @@
+<!-- extends --->
+{% extends "layout.html" %}
+
+<!---hjsghjsjh -->
+{% from "macros.html" import frm_grp_field, frm_grp_submit with context %}
+
+<!-- block content main -->
+{% block content %}
+
+<div class="content-section">
+    <!-- inf-os 001 A -->
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Post</legend>
+
+            <!-- username 101 !L register + account - login is-SignUp -->
+            {{ frm_grp_field(form.title) }}
+
+            <!-- email 111 * -->
+            {{ frm_grp_field(form.content) }}
+
+        </fieldset>
+        <!-- submit 111 * -->
+        {{ frm_grp_submit() }}
+
+    </form>
+
+</div>
+
+
+<!-- !block content main -->
+{% endblock %}
+<!-- !block content -->

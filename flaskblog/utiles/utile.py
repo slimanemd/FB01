@@ -9,8 +9,8 @@ from flask import flash
 
 #App
 from flaskblog.data.dt_posts import i18s
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from flaskblog.models import User
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from flaskblog.models import User, Post
 from flaskblog import app, db, bcrypt
 from flask_login import login_user, current_user
 from flask import redirect, url_for, request
@@ -104,3 +104,40 @@ def processAccount():
     return {'image':account_image_file, 'form':account_form}
   else:
     return None
+
+#----------------------------------------------------------
+def getPostForm():
+  psform =  PostForm()
+  if psform.validate_on_submit():
+    current_post  = Post(title = psform.title.data, content=psform.content.data, user_id =  current_user.id)
+    db.session.add(current_post)
+    db.session.commit()
+      
+    #
+    flash('Your post has been created!', 'success')
+    return None #redirect(url_for('account'))
+  elif request.method == 'GET':
+    #
+    psform.title.data     = ""
+    psform.content.data   = ""
+
+  #
+  return psform
+
+#Feature 003 : user posts current_
+#1205201719
+def get_posts_for(username):
+  current_page = request.args.get('page',1,type=int)
+  if username == "":
+    user = None
+    posts = Post.query
+  else:
+    user =  User.query.filter_by(username = username).first_or_404()
+    posts = Post.query.filter_by(author=user)
+
+  posts = posts.order_by(Post.date_posted.desc())\
+               .paginate(page = current_page,per_page=5)
+
+  #
+  return posts, user
+

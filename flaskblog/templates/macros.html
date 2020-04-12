@@ -1,0 +1,67 @@
+<!-- MAC password -->
+{% macro frm_grp_field(form_field) -%}
+<div class="form-group">
+    <!-- label field -->
+    {{ form_field.label(class="form-control-label") }}
+    <!-- input field -->
+    {{ form_field(class='form-control form-control-log' + (' ' + 'is-invalid' if(form_field.errors) else '') ) }}
+
+    <!-- input field -->
+    {% if form_field.errors %}
+    <div class="invalid-feedback">
+        {% for error in form_field.errors %}
+        <span>{{ error }}</span> {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+
+<!-- MAC submit #form.infos['submit'] -->
+{% macro frm_grp_submit() -%}
+<div class="form-group">
+    {{ form.submit(class='btn btn-outline-info', value=data.submit) }}
+</div>
+{%- endmacro %}
+
+<!-- MAC articlePost -->
+{% macro articlePost(post, mode) -%}
+
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + 
+(post.author_image_file if post.author_image_file else 'default.jpg')) }}">
+
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{{  url_for('user_posts', username = post.author.username) }}">{{ post.author.username }}</a>
+            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <h2 class="article-title">
+            {% if mode != 'SHOW' %}
+            <a href="{{ url_for('post', post_id = post.id) }}">
+                {{ post.title |striptags|title }} 
+            </a> {% else %} {{ post.title |striptags|title }} {% endif %}
+        </h2>
+        <p class="article-content">{{ post.content }}</p>
+    </div>
+
+</article>
+
+{%- endmacro %}
+<!-- !MAC articlePost  'home' = page_route -->
+
+<!-- MAC paginationPosts  data['posts'] -->
+<!-- µpg  -->{% macro paginationPosts(posts, user) -%}
+
+<!-- for  -->{% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+
+<!-- if   -->{% if page_num %}
+<!-- if      --><a class="btn btn-{{ 'outline-' if posts.page == page_num else '' }}info mb-4" href="{{ url_for('home' , username=user.username if user else '', page=page_num)}}">{{ page_num }}</a>
+<!-- else -->{% else %}
+<!-- else -->...
+<!-- !if  -->{% endif %}
+
+<!-- !for -->{% endfor%}
+
+<!-- !µpg -->{%- endmacro %}
+<!-- !MAC paginationPosts -->

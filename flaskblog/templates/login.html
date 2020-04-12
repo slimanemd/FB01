@@ -1,22 +1,12 @@
 {% extends "layout.html" %}
 
-<!-- MAC password -->
-{% macro frm_grp_field(form_field) -%}
-<div class="form-group">
-    <!-- label field -->
-    {{ form_field.label(class="form-control-label") }}
-    <!-- input field -->
-    {{ form_field(class='form-control form-control-log' + (' ' + 'is-invalid' if(form_field.errors) else '') ) }}
 
-    <!-- input field -->
-    {% if form_field.errors %}
-    <div class="invalid-feedback">
-        {% for error in form_field.errors %}
-        <span>{{ error }}</span> {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{%- endmacro %}
+<!---hjsghjsjh -->
+{% from "macros.html" import frm_grp_field with context %}
+<!---hjsghjsjh -->
+{% from "macros.html" import frm_grp_submit with context %}
+
+
 
 <!-- MAC picture -->
 {% macro frm_grp_picture(form_picture) -%}
@@ -28,7 +18,8 @@
     {% if form_picture.errors %}
     <!-- dd -->
     {% for error in form_picture.errors %}
-    <span class="text-danger">{{ error }}</span></br>
+    <span class="text-danger">{{ error }}</span><br>
+    <!--ggg-->
     {% endfor %}
     <!--dd -->
     {% endif %}
@@ -45,12 +36,8 @@
 {%- endmacro %}
 
 
-<!-- MAC submit #form.infos['submit'] -->
-{% macro frm_grp_submit() -%}
-<div class="form-group">
-    {{ form.submit(class='btn btn-outline-info', value=data.submit) }}
-</div>
-{%- endmacro %}
+<!---submit -->
+
 
 <!-- MAC submit -->
 {% macro frm_grp_forgot() -%}
@@ -83,6 +70,7 @@
 </div>
 {%- endmacro %}
 
+
 <!-- block content main -->
 {% block content %}
 
@@ -92,7 +80,7 @@
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Join today {{ form.data.title }}</legend>
+            <legend class="border-bottom mb-4">Join today</legend>
 
             <!-- username 101 !L register + account - login is-SignUp -->
             {% if data.entity != 'L' %} {{ frm_grp_field(form.username) }} {% endif %}

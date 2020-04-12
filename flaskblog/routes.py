@@ -1,20 +1,22 @@
 #======================================================================================
 #imports
-from flaskblog.utiles.utile import reglog, processAccount
+from flaskblog.utiles.utile import reglog, processAccount, getPostForm, get_posts_for
 from flaskblog import app
 from flask import render_template, redirect, url_for, request
 from flaskblog.data.dt_posts import user, posts, title
 from flask_login import current_user, logout_user, login_required
 
 from flaskblog.data.dt_posts import i18s
+
+from flaskblog.models import Post
 #======================================================================================
 #Routes
 
-#home route
+#1205201734: home route
 @app.route('/')
 @app.route('/home')
 def home():
-  return render_template('home.html', data = {'user':user, 'posts': posts})
+  return user_posts("")
 
 #about route
 @app.route('/about')
@@ -63,9 +65,30 @@ def account():
   result = processAccount()  #account_image_file, account_form
   if result == None: return redirect(url_for('account'))
   return render_template('login.html', 
-                          data        = {'title' :'Account', 'entity':'A',
-                                         'submit':i18s['en']['account_submit']},
+                          data        = {'title' :'Account', 'entity':'A', 'submit':i18s['en']['account_submit']},
                           image_file  = result['image'], 
                           form        = result['form'])
 
 
+#new post route
+@app.route('/post/new', methods= ['GET', 'POST'])
+@login_required
+def new_post():
+  postForm =  getPostForm()
+  if postForm == None: return  redirect(url_for('home'))
+  return render_template('create_post.html',
+                          data = {'title' :'New Post', 'entity':'P', 'submit':i18s['en']['new_post_submit']},
+                          form = postForm)
+
+#new post route
+@app.route('/post/<int:post_id>')
+@login_required
+def post(post_id):
+  current_post = Post.query.get_or_404(post_id)
+  return render_template('post.html',data={'title': current_post.title}, mode='SHOW', post = current_post)
+
+#1205201719: user route
+@app.route('/user/<string:username>')
+def user_posts(username):
+  posts , user =  get_posts_for(username)
+  return render_template('home.html', data = {'posts':posts, 'user':user, 'mode':'HOME'})  

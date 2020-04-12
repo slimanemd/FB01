@@ -1,0 +1,15 @@
+<!-- extends --->
+{% extends "layout.html" %}
+
+<!---hjsghjsjh -->
+{% from "macros.html" import articlePost with context %}
+
+<!-- block content -->
+{% block content %}
+<!-- !content -->
+
+{{ articlePost(post, mode) }}
+
+<!-- !content -->
+{% endblock %}
+<!-- !block content -->
